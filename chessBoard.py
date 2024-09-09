@@ -14,7 +14,7 @@ pygame.display.set_caption("4 x 4 chess")
 
 # 크기 정의
 block_size = 160
-border_thickness = 5
+border_thickness = 3
 board_size = 4 * block_size + 5 * border_thickness
 
 # 체스 보드 위치
@@ -29,6 +29,7 @@ brown = (151, 88, 43)
 
 # 체스말 초기화
 chess_piece = {}
+piece_size  = 100
 colors = ['black', 'white']
 pieces = ['king', 'queen', 'rook', 'pawn']
 for color in colors:
@@ -37,7 +38,7 @@ for color in colors:
         try:
             chess_piece[dict_key] = pygame.transform.scale(
                 pygame.image.load(f'image/{dict_key}.png'),
-                (block_size, block_size)
+                (piece_size, piece_size)
             )
         except pygame.error:
             print(f"Error loading image for {dict_key}")
@@ -67,8 +68,8 @@ def draw_chess_pieces():
     for row in range(4):
         for col in range(4):
             piece_image = chess_piece[initial_setup[row][col]]
-            x = start_x + col * (block_size + border_thickness) + border_thickness
-            y = start_y + row * (block_size + border_thickness) + border_thickness
+            x = start_x + col * (block_size + border_thickness) + border_thickness + (block_size - piece_size) / 2
+            y = start_y + row * (block_size + border_thickness) + border_thickness + (block_size - piece_size) / 2
 
             screen.blit(piece_image, (x, y))
 
