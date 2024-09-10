@@ -143,39 +143,3 @@ class ChessBoard:
     def is_king_captured(self):
         kings = sum(row.count('white_king') + row.count('black_king') for row in self.board)
         return kings < 2
-
-
-# 보드 초기화 및 게임 루프 시작
-chess_board = ChessBoard()
-
-while True:
-    print(f"{chess_board.turn}의 차례입니다.")
-    chess_board.display()
-
-    if chess_board.is_king_captured():
-        print(f"{chess_board.turn} 팀이 이겼습니다!")
-        break
-
-    while True:
-        start_pos = tuple(map(int, input("이동할 말을 선택하세요 (행 열): ").split()))
-        piece = chess_board.board[start_pos[0]][start_pos[1]]
-
-        if piece == '' or chess_board.turn not in piece:
-            print(f"잘못된 말 선택입니다. {chess_board.turn}의 말을 선택하세요.")
-            continue
-        else:
-            break
-
-    possible_moves = chess_board.get_possible_moves(start_pos)
-
-    if not possible_moves:
-        print("이동 가능한 위치가 없습니다. 다른 말을 선택하세요.")
-        continue
-
-    print(f"이동 가능한 위치: {possible_moves}")
-
-    end_pos = tuple(map(int, input("이동할 위치를 입력하세요 (행 열): ").split()))
-    if chess_board.move_piece(start_pos, end_pos):
-        print("이동 완료!")
-    else:
-        print("유효하지 않은 움직임입니다. 다시 시도하세요.")
