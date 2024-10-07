@@ -22,7 +22,7 @@
 <a href="https://github.com/KimHaejoong1">
 <img src="https://avatars.githubusercontent.com/u/128127416?v=4" width="80" alt=""/>
 <br />
-<sub><b>KimHaejoong1</b></sub>
+<sub><b>KimHaejoong1204</b></sub>
 </a>
 <br />
 </td>
