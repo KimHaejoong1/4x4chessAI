@@ -8,13 +8,13 @@
 
 ### 기계 학습의 분류
 
-<img src="study/image/1-1.png">
+<img src="image/1-1.png">
 
 ### 지도 학습
 
 ### 강화 학습
 
-<img src="study/image/1-4.png">
+<img src="image/1-4.png">
 
 ## 1.2 순차적 의사결정 문제
 
@@ -22,13 +22,13 @@
 
 ### 샤워하는 남자
 
-<img src="study/image/1-2.png">
+<img src="image/1-2.png">
 
 순서가 
 
 뒤바뀐다면
 
-<img src="study/image/1-3.png">
+<img src="image/1-3.png">
 
 각 상황에 따라 하는 행동이 다음 상황에 영향을 준다
 
@@ -60,13 +60,13 @@
 
 ## 1.4 에이전트와 환경
 
-<img src="study/image/1-5.png">
+<img src="image/1-5.png">
 
 **에이전트(Agent)** : 학습의 주체, **환경(Environment)** 속에서 행동하는 개체
 
 현재 상태에 대한 모든 정보 - **상태(state)**
 
-<img src="./image/1-4.png">
+<img src="image/1-4.png">
 
 하나의 루프가 끝나면 **한 틱(tick)이 지났다**고 표현
 
@@ -74,7 +74,7 @@
 
 ### 병렬성의 힘
 
-<img src="study/image/1-6.png">
+<img src="image/1-6.png">
 
 병렬성을 통해 빠르게 학습 가능
 
