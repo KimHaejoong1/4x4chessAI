@@ -4,9 +4,7 @@
 
 ### 0단계
 
-$$
-<img src="image/3-1.png">
-$$
+<img src="image/2-1.png">
 
 ### 1단계
 
