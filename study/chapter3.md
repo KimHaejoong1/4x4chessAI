@@ -4,7 +4,9 @@
 
 ### 0단계
 
-<img src="image/3-1.png">
+$$
+v_{\pi}(s_t) = 𝔼_{\pi} \left[ r_{t+1} + \gamma v_{\pi}(s_{t+1}) \right]
+$$
 
 ### 1단계
 
