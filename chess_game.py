@@ -141,5 +141,9 @@ class ChessBoard:
         return False
 
     def is_king_captured(self):
-        kings = sum(row.count('white_king') + row.count('black_king') for row in self.board)
-        return kings < 2
+        # 현재 턴의 킹을 기준으로 확인
+        current_king = f"{self.turn}_king"
+        for row in self.board:
+            if current_king in row:
+                return False  # 현재 턴의 킹이 존재하면 게임 계속 진행
+        return True  # 현재 턴의 킹이 없다면 게임 종료
