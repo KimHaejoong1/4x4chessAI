@@ -1,4 +1,4 @@
-class ChessBoard:
+class ChessGame:
     def __init__(self):
         self.board = [
             ['black_rook', 'black_queen', 'black_king', 'black_rook'],

@@ -1,10 +1,10 @@
-from chess_game import ChessBoard
+from chess_game import ChessGame
 from chess_board import update_display
 import pygame
 import sys
 
 # 체스 보드 초기화
-chess_board = ChessBoard()
+chess_board = ChessGame()
 
 # Pygame 루프
 running = True
