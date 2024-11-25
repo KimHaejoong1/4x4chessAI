@@ -45,7 +45,8 @@ while running:
 
     # 승리 조건 확인
     if chess_board.is_king_captured():
-        print(f"{chess_board.turn} 팀이 이겼습니다!")
+        winner = 'black' if chess_board.turn == 'white' else 'white'
+        print(f"{winner} 팀이 이겼습니다!")
         break
 
 pygame.quit()
