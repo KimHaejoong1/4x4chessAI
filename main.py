@@ -32,6 +32,9 @@ while running:
                         print(f"선택된 말: {piece} (위치: {selected_piece_pos})")
                     else:
                         print("잘못된 말을 선택했습니다.")
+                elif selected_piece_pos == (row, col):  # 이미 선택한 말을 다시 클릭한 경우
+                    print(f"선택 취소: {chess_board.board[row][col]} (위치: {selected_piece_pos})")
+                    selected_piece_pos = None  # 선택 상태 해제
                 else:  # 이동 위치 선택
                     end_pos = (row, col)
                     if chess_board.move_piece(selected_piece_pos, end_pos):
