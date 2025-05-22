@@ -1,52 +1,52 @@
-from chess_game import ChessBoard
-from chess_board import update_display
 import pygame
 import sys
+from chess.game import ChessGame
+from chess.ui import ChessUI
 
-# 체스 보드 초기화
-chess_board = ChessBoard()
+def main():
+    # UI 초기화
+    ui = ChessUI()
+    
+    # 게임 초기화
+    game = ChessGame()
+    
+    # Pygame 루프
+    clock = pygame.time.Clock()
+    running = True
+    
+    # 선택된 말과 가능한 이동 위치 추적
+    selected_pos = None
+    possible_moves = []
+    
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                
+            elif event.type == pygame.MOUSEBUTTONDOWN:  # 마우스 클릭 이벤트
+                board_pos = ui.get_board_position(event.pos)
+                if board_pos:  # 유효한 보드 위치인지 확인
+                    if game.selected_piece_pos is None:  # 말을 선택하지 않은 경우
+                        if game.select_piece(board_pos):
+                            selected_pos = board_pos
+                            possible_moves = game.board.get_possible_moves(selected_pos)
+                    else:  # 이동 위치 선택
+                        game.move_selected_piece(board_pos)
+                        selected_pos = None
+                        possible_moves = []
+                        
+                        # 게임 종료 여부 확인
+                        if not game.running:
+                            print("게임이 종료되었습니다. 5초 후 창이 닫힙니다.")
+                            pygame.time.delay(5000)  # 5초 대기
+                            running = False
+        
+        # 화면 업데이트
+        ui.update_display(game.board.board, selected_pos, possible_moves)
+        clock.tick(30)  # 초당 30 프레임으로 제한
+    
+    pygame.quit()
+    sys.exit()
 
-# Pygame 루프
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-    # Pygame 보드 업데이트
-    update_display(chess_board.board)
-
-    # 터미널에 텍스트 보드 출력
-    print(f"{chess_board.turn}의 차례입니다.")
-    chess_board.display()
-
-    if chess_board.is_king_captured():
-        print(f"{chess_board.turn} 팀이 이겼습니다!")
-        break
-
-    while True:
-        start_pos = tuple(map(int, input("이동할 말을 선택하세요 (행 열): ").split()))
-        piece = chess_board.board[start_pos[0]][start_pos[1]]
-
-        if piece == '' or chess_board.turn not in piece:
-            print(f"잘못된 말 선택입니다. {chess_board.turn}의 말을 선택하세요.")
-            continue
-        else:
-            break
-
-    possible_moves = chess_board.get_possible_moves(start_pos)
-
-    if not possible_moves:
-        print("이동 가능한 위치가 없습니다. 다른 말을 선택하세요.")
-        continue
-
-    print(f"이동 가능한 위치: {possible_moves}")
-
-    end_pos = tuple(map(int, input("이동할 위치를 입력하세요 (행 열): ").split()))
-    if chess_board.move_piece(start_pos, end_pos):
-        print("이동 완료!")
-    else:
-        print("유효하지 않은 움직임입니다. 다시 시도하세요.")
-
-pygame.quit()
-sys.exit()
+if __name__ == "__main__":
+    main()
