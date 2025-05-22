@@ -1,56 +1,52 @@
-from chess_game import ChessBoard
-from chess_board import update_display, start_x, start_y, block_size, border_thickness
 import pygame
 import sys
+from chess.game import ChessGame
+from chess.ui import ChessUI
 
-# 체스 보드 초기화
-chess_board = ChessBoard()
+def main():
+    # UI 초기화
+    ui = ChessUI()
+    
+    # 게임 초기화
+    game = ChessGame()
+    
+    # Pygame 루프
+    clock = pygame.time.Clock()
+    running = True
+    
+    # 선택된 말과 가능한 이동 위치 추적
+    selected_pos = None
+    possible_moves = []
+    
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                
+            elif event.type == pygame.MOUSEBUTTONDOWN:  # 마우스 클릭 이벤트
+                board_pos = ui.get_board_position(event.pos)
+                if board_pos:  # 유효한 보드 위치인지 확인
+                    if game.selected_piece_pos is None:  # 말을 선택하지 않은 경우
+                        if game.select_piece(board_pos):
+                            selected_pos = board_pos
+                            possible_moves = game.board.get_possible_moves(selected_pos)
+                    else:  # 이동 위치 선택
+                        game.move_selected_piece(board_pos)
+                        selected_pos = None
+                        possible_moves = []
+                        
+                        # 게임 종료 여부 확인
+                        if not game.running:
+                            print("게임이 종료되었습니다. 5초 후 창이 닫힙니다.")
+                            pygame.time.delay(5000)  # 5초 대기
+                            running = False
+        
+        # 화면 업데이트
+        ui.update_display(game.board.board, selected_pos, possible_moves)
+        clock.tick(30)  # 초당 30 프레임으로 제한
+    
+    pygame.quit()
+    sys.exit()
 
-# Pygame 초기화
-pygame.init()
-
-# 선택된 말과 이동 위치를 추적하기 위한 변수
-selected_piece_pos = None
-
-# Pygame 루프
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-        elif event.type == pygame.MOUSEBUTTONDOWN:  # 마우스 클릭 이벤트
-            mouse_x, mouse_y = event.pos
-            # 클릭한 위치를 체스 보드의 행, 열로 변환
-            col = int((mouse_x - start_x) // (block_size + border_thickness))
-            row = int((mouse_y - start_y) // (block_size + border_thickness))
-            if 0 <= row < 4 and 0 <= col < 4:  # 유효한 보드 위치인지 확인
-                if selected_piece_pos is None:  # 말을 선택하지 않은 경우
-                    piece = chess_board.board[row][col]
-                    if piece and chess_board.turn in piece:  # 현재 턴의 말을 선택
-                        selected_piece_pos = (row, col)
-                        print(f"선택된 말: {piece} (위치: {selected_piece_pos})")
-                    else:
-                        print("잘못된 말을 선택했습니다.")
-                elif selected_piece_pos == (row, col):  # 이미 선택한 말을 다시 클릭한 경우
-                    print(f"선택 취소: {chess_board.board[row][col]} (위치: {selected_piece_pos})")
-                    selected_piece_pos = None  # 선택 상태 해제
-                else:  # 이동 위치 선택
-                    end_pos = (row, col)
-                    if chess_board.move_piece(selected_piece_pos, end_pos):
-                        print(f"말 이동 완료: {selected_piece_pos} -> {end_pos}")
-                        selected_piece_pos = None
-                    else:
-                        print("유효하지 않은 움직임입니다. 다시 시도하세요.")
-
-    # Pygame 보드 업데이트
-    update_display(chess_board.board)
-
-    # 승리 조건 확인
-    if chess_board.is_king_captured():
-        winner = 'black' if chess_board.turn == 'white' else 'white'
-        print(f"{winner} 팀이 이겼습니다!")
-        break
-
-pygame.quit()
-sys.exit()
+if __name__ == "__main__":
+    main()
