@@ -74,6 +74,12 @@ class GameEngine:
             # 게임 종료는 즉시 하지 않고, UI에서 처리하도록 함
             return 'stalemate'
             
+        # 부족한 물질 확인
+        elif self.check_detector.is_insufficient_material():
+            print("부족한 물질! 무승부입니다.")
+            # 게임 종료는 즉시 하지 않고, UI에서 처리하도록 함
+            return 'insufficient_material'
+            
         # 체크 확인
         elif self.check_detector.is_king_in_check(current_color):
             print(f"{current_color} 킹이 체크 상태입니다!")

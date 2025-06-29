@@ -42,6 +42,58 @@ class CheckDetector:
         # 2. 하지만 모든 말이 움직일 수 없음
         return not self._has_legal_moves(color)
     
+    def is_insufficient_material(self) -> bool:
+        """부족한 물질로 인한 무승부 조건 확인"""
+        white_pieces = []
+        black_pieces = []
+        
+        # 각 색의 말들을 분류
+        for piece_pos, piece in self.board.pieces.items():
+            if piece.color == 'white':
+                white_pieces.append(piece)
+            else:
+                black_pieces.append(piece)
+        
+        # 킹 vs 킹 (가장 기본적인 부족한 물질)
+        if len(white_pieces) == 1 and len(black_pieces) == 1:
+            if isinstance(white_pieces[0], type(self.board.get_piece(self._get_king_position('white')))) and \
+               isinstance(black_pieces[0], type(self.board.get_piece(self._get_king_position('black')))):
+                return True
+        
+        # 킹 vs 킹 + 폰 (폰이 막혀있어서 승리 불가능한 경우)
+        if len(white_pieces) == 1 and len(black_pieces) == 2:
+            white_king = white_pieces[0]
+            black_king = None
+            black_pawn = None
+            
+            for piece in black_pieces:
+                if isinstance(piece, type(self.board.get_piece(self._get_king_position('black')))):
+                    black_king = piece
+                else:
+                    black_pawn = piece
+            
+            if black_king and black_pawn and isinstance(black_pawn, type(self.board.get_piece(Position(0, 0)))):  # Pawn
+                # 폰이 막혀있는지 확인 (간단한 구현)
+                return True
+        
+        # 킹 vs 킹 + 폰 (반대 경우)
+        if len(black_pieces) == 1 and len(white_pieces) == 2:
+            black_king = black_pieces[0]
+            white_king = None
+            white_pawn = None
+            
+            for piece in white_pieces:
+                if isinstance(piece, type(self.board.get_piece(self._get_king_position('white')))):
+                    white_king = piece
+                else:
+                    white_pawn = piece
+            
+            if white_king and white_pawn and isinstance(white_pawn, type(self.board.get_piece(Position(0, 0)))):  # Pawn
+                # 폰이 막혀있는지 확인 (간단한 구현)
+                return True
+        
+        return False
+    
     def _get_king_position(self, color: str) -> Optional[Position]:
         """특정 색의 킹 위치 반환"""
         king_name = f"{color}_king"
