@@ -1,13 +1,19 @@
 import pygame
 import sys
+from typing import Optional, List
+from .base_ui import BaseUI
+from ..domain.position import Position
+from ..domain.board import Board
 
-class ChessUI:
-    def __init__(self):
+class PygameUI(BaseUI):
+    """Pygame UI 구현"""
+    
+    def __init__(self, screen_width: int = 900, screen_height: int = 700):
         # Pygame 초기화 및 디스플레이 설정
         pygame.init()
         
-        self.screen_width = 900
-        self.screen_height = 700
+        self.screen_width = screen_width
+        self.screen_height = screen_height
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
         pygame.display.set_caption("4 x 4 chess")
         
@@ -58,16 +64,16 @@ class ChessUI:
                 color = self.beige if (row + col) % 2 == 0 else self.brown
                 pygame.draw.rect(self.screen, color, (x, y, self.block_size, self.block_size))
                 
-    def draw_chess_pieces(self, board, selected_pos=None, possible_moves=None):
+    def draw_chess_pieces(self, board: Board, selected_pos: Optional[Position] = None, 
+                         possible_moves: Optional[List[Position]] = None):
         """체스 말 그리기"""
         # 기본 보드 그리기
         self.draw_chess_board()
         
         # 선택된 위치 하이라이트
         if selected_pos:
-            row, col = selected_pos
-            x = self.start_x + col * (self.block_size + self.border_thickness) + self.border_thickness
-            y = self.start_y + row * (self.block_size + self.border_thickness) + self.border_thickness
+            x = self.start_x + selected_pos.col * (self.block_size + self.border_thickness) + self.border_thickness
+            y = self.start_y + selected_pos.row * (self.block_size + self.border_thickness) + self.border_thickness
             highlight = pygame.Surface((self.block_size, self.block_size), pygame.SRCALPHA)
             highlight.fill((100, 200, 100, 100))
             self.screen.blit(highlight, (x, y))
@@ -75,9 +81,8 @@ class ChessUI:
         # 가능한 이동 위치 하이라이트
         if possible_moves:
             for move in possible_moves:
-                row, col = move
-                x = self.start_x + col * (self.block_size + self.border_thickness) + self.border_thickness
-                y = self.start_y + row * (self.block_size + self.border_thickness) + self.border_thickness
+                x = self.start_x + move.col * (self.block_size + self.border_thickness) + self.border_thickness
+                y = self.start_y + move.row * (self.block_size + self.border_thickness) + self.border_thickness
                 highlight = pygame.Surface((self.block_size, self.block_size), pygame.SRCALPHA)
                 highlight.fill((100, 100, 200, 100))
                 self.screen.blit(highlight, (x, y))
@@ -85,19 +90,34 @@ class ChessUI:
         # 말 그리기
         for row in range(4):
             for col in range(4):
-                piece = board[row][col]
-                if piece:
-                    piece_image = self.chess_piece[piece]
+                piece_name = board.board[row][col]
+                if piece_name:
+                    piece_image = self.chess_piece[piece_name]
                     x = self.start_x + col * (self.block_size + self.border_thickness) + self.border_thickness + (self.block_size - self.piece_size) / 2
                     y = self.start_y + row * (self.block_size + self.border_thickness) + self.border_thickness + (self.block_size - self.piece_size) / 2
                     self.screen.blit(piece_image, (x, y))
                     
-    def update_display(self, board, selected_pos=None, possible_moves=None):
-        """화면 업데이트"""
+    def display_board(self, board: Board, selected_pos: Optional[Position] = None, 
+                     possible_moves: Optional[List[Position]] = None):
+        """보드 표시"""
         self.draw_chess_pieces(board, selected_pos, possible_moves)
         pygame.display.flip()
         
-    def get_board_position(self, mouse_pos):
+    def get_user_move(self, board: Board) -> Optional[Position]:
+        """사용자 입력 받기 - 이 메서드는 pygame 이벤트 루프에서 호출됨"""
+        # 이 메서드는 실제로는 사용되지 않고, main.py에서 직접 이벤트 처리
+        pass
+        
+    def show_message(self, message: str):
+        """메시지 표시"""
+        print(message)  # 간단한 구현
+        
+    def update_display(self, board: Board, selected_pos: Optional[Position] = None, 
+                      possible_moves: Optional[List[Position]] = None):
+        """화면 업데이트"""
+        self.display_board(board, selected_pos, possible_moves)
+        
+    def get_board_position(self, mouse_pos) -> Optional[Position]:
         """마우스 위치를 보드의 행, 열 위치로 변환"""
         mouse_x, mouse_y = mouse_pos
         
@@ -110,5 +130,5 @@ class ChessUI:
         row = int((mouse_y - self.start_y) // (self.block_size + self.border_thickness))
         
         if 0 <= row < 4 and 0 <= col < 4:
-            return (row, col)
-        return None
+            return Position(row, col)
+        return None 

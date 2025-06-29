@@ -1,40 +1,41 @@
-from chess.piece import Pawn, Rook, King, Queen
+from typing import Dict, List, Optional
+from .position import Position
+from .piece import Pawn, Rook, King, Queen
 
 class Board:
     def __init__(self):
         # 보드 초기화
         self.board = [[''] * 4 for _ in range(4)]
-        self.pieces = {}
-        self.initialize_board()
+        self.pieces: Dict[Position, 'Piece'] = {}
         self.turn = 'white'  # 선공은 백색 말
+        self.initialize_board()
         
     def initialize_board(self):
         """체스 보드 초기 상태 설정"""
         # 검은색 말 배치
-        self.place_piece(Rook('black'), (0, 0))
-        self.place_piece(Queen('black'), (0, 1))
-        self.place_piece(King('black'), (0, 2))
-        self.place_piece(Rook('black'), (0, 3))
+        self.place_piece(Rook('black'), Position(0, 0))
+        self.place_piece(Queen('black'), Position(0, 1))
+        self.place_piece(King('black'), Position(0, 2))
+        self.place_piece(Rook('black'), Position(0, 3))
         
         # 검은색 폰 배치
         for col in range(4):
-            self.place_piece(Pawn('black'), (1, col))
+            self.place_piece(Pawn('black'), Position(1, col))
             
         # 흰색 폰 배치
         for col in range(4):
-            self.place_piece(Pawn('white'), (2, col))
+            self.place_piece(Pawn('white'), Position(2, col))
             
         # 흰색 말 배치
-        self.place_piece(Rook('white'), (3, 0))
-        self.place_piece(Queen('white'), (3, 1))
-        self.place_piece(King('white'), (3, 2))
-        self.place_piece(Rook('white'), (3, 3))
+        self.place_piece(Rook('white'), Position(3, 0))
+        self.place_piece(Queen('white'), Position(3, 1))
+        self.place_piece(King('white'), Position(3, 2))
+        self.place_piece(Rook('white'), Position(3, 3))
         
-    def place_piece(self, piece, pos):
+    def place_piece(self, piece: 'Piece', pos: Position):
         """말을 보드에 배치"""
-        row, col = pos
-        self.board[row][col] = piece.name
-        self.pieces[(row, col)] = piece
+        self.board[pos.row][pos.col] = piece.name
+        self.pieces[pos] = piece
         
     def display(self):
         """콘솔에 체스 보드 표시"""
@@ -51,12 +52,11 @@ class Board:
             print("  +------------+------------+------------+------------+")
         print()
         
-    def get_piece(self, pos):
+    def get_piece(self, pos: Position) -> Optional['Piece']:
         """해당 위치의 말 객체 반환"""
-        row, col = pos
-        return self.pieces.get((row, col), None)
+        return self.pieces.get(pos, None)
         
-    def get_possible_moves(self, start):
+    def get_possible_moves(self, start: Position) -> List[Position]:
         """특정 위치에서 가능한 모든 이동 위치 반환"""
         piece = self.get_piece(start)
         if not piece:
@@ -64,7 +64,7 @@ class Board:
             
         return piece.get_possible_moves(self.board, start)
         
-    def move_piece(self, start, end):
+    def move_piece(self, start: Position, end: Position) -> bool:
         """말 이동하기"""
         piece = self.get_piece(start)
         
@@ -90,19 +90,19 @@ class Board:
             del self.pieces[end]
             
         # 말 이동
-        self.board[end[0]][end[1]] = piece.name
-        self.board[start[0]][start[1]] = ''
+        self.board[end.row][end.col] = piece.name
+        self.board[start.row][start.col] = ''
         self.pieces[end] = piece
         
         # 턴 변경
         self.turn = 'black' if self.turn == 'white' else 'white'
         return True
         
-    def is_king_captured(self):
+    def is_king_captured(self) -> bool:
         """왕이 잡혔는지 확인 (게임 종료 조건)"""
         # 현재 턴의 킹을 기준으로 확인
         king_name = f"{self.turn}_king"
         for row in self.board:
             if king_name in row:
                 return False  # 현재 턴의 킹이 존재하면 게임 계속 진행
-        return True  # 현재 턴의 킹이 없다면 게임 종료
+        return True  # 현재 턴의 킹이 없다면 게임 종료 
