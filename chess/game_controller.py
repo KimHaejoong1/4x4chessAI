@@ -59,6 +59,7 @@ class GameController:
             piece = self.board.get_piece(board_pos)
             if piece and piece.color == self.board.turn:
                 self.selected_pos = board_pos
+                self.engine.selected_piece_pos = board_pos  # engine에도 설정
                 self.possible_moves = self.engine.get_legal_moves(board_pos)
                 print(f"선택된 말: {piece.name}")
             else:
@@ -67,6 +68,7 @@ class GameController:
             # 같은 말을 다시 클릭한 경우 선택 취소
             if self.selected_pos == board_pos:
                 self.selected_pos = None
+                self.engine.selected_piece_pos = None  # engine에도 설정
                 self.possible_moves = []
                 print("선택 취소")
                 return
@@ -74,6 +76,7 @@ class GameController:
             # 말 이동
             if self.engine.move_selected_piece(board_pos):
                 self.selected_pos = None
+                self.engine.selected_piece_pos = None  # engine에도 설정
                 self.possible_moves = []
                 print(f"말 이동 완료: {board_pos.row}, {board_pos.col}")
             else:
