@@ -10,10 +10,10 @@ from .ui.pygame_ui import PygameUI
 class GameController:
     """게임 진행을 관리하는 컨트롤러"""
     
-    def __init__(self):
+    def __init__(self, ui=None):
         self.board = Board()
         self.engine = GameEngine(self.board)
-        self.ui = PygameUI()
+        self.ui = ui if ui is not None else PygameUI()
         self.selected_pos: Optional[Position] = None
         self.possible_moves: List[Position] = []
         self.game_status = 'normal'
